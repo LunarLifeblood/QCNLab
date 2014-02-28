@@ -16,3 +16,9 @@ def askForDir(): # Function to ask the user for a directory input
     directory = directory.replace('/', '\\')
     return directory
 
+def createZeroedList(size):
+    alist = []
+    for i in range(0, size, 1):
+        alist.append(0)
+    return alist
+
