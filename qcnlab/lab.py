@@ -47,9 +47,32 @@ for directory in listOfDirs:
             listOfBins[int((float(cell[4])+abs(minimum))/binSize)-1] += 1
 fs.close()
 print("Finished.")
+
+
+baseAvg = functions.findBaselineAvg(listOfBins, numBins)
+
+peakData = functions.findpeaks(listOfBins, numBins, binSize, baseAvg)
+
+
+print("Calculating peaks...")
+peakXVal = []
+for peak in peakData:
+    peakXVal.append(peak*binSize)
+print("Peaks fount at ")
+print(peakXVal)
+
 #write results to a file
 fs = open("output.csv", "w")
+j = 0
 for i in range(0, numBins, 1):
-    fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+"\n")
+    try:
+        if peakData[j] == i:
+            fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",10000,"+str(baseAvg[i])+"\n")
+            j+=1
+        else:
+            fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
+    except:
+        fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
 print("Output File created.")
 fs.close()
+
