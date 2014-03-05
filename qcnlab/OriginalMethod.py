@@ -59,7 +59,7 @@ def formHistogram(outputFile, listOfDirs):
         success = True
         try:
             fs = open(listOfDirs[i], "r")
-            #print("Successfully opened "+directory)
+            #print("Successfully opened "+listOfDirs[i])
         except:
             print("FAILED to open "+listOfDirs[i])
             success = False

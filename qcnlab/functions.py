@@ -11,7 +11,11 @@ def getList(directory):  # Function to get a list of files in the directory
 def printList(alist): # Function to print a list
     for item in alist:
         print(item)
-
+        
+def writeList(aList, fs):
+    for item in aList:
+        fs.write(str(item)+"\n")
+ 
 def askForDir(): # Function to ask the user for a directory input
     directory = input("What's the directory of the files?")
     directory = directory.replace('/', '\\')
