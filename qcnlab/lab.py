@@ -1,78 +1,36 @@
 import functions
+import OriginalMethod
+import ChrisMethod
+import HarrysMethod
+import TomsMethod
 
-# Asks user for a directory then returns a list of all files in it
 listOfDirs = functions.getList(functions.askForDir())
 
-# Opens the files to read the data
-maximum = 0.0
-minimum = 0.0
 numBins = 250
+volts = 15.18
+#volts = float(input("What is the voltage reading?"))
+e = 1.6e-19
+h = 6.626e-34
+eSqH = (2*e*e)/h
 binSize = 0.0
 listOfBins = functions.createZeroedList(numBins)
-fs = None
-print("Reading in data...")
-# read through files and fine minimum/maximum data
-for directory in listOfDirs:
-    success = True
-    try:
-        fs = open(directory, "r")
-        #print("Successfully opened "+directory)
-    except:
-        print("FAILED to open "+directory)
-        success = False
-    if success == True:
-        #read file
-        for line in fs:
-            cell = line.split(",")
-            if float(cell[4]) > maximum:
-                maximum = float(cell[4])
-            elif float(cell[4]) < minimum:
-                minimum = float(cell[4])
-print("Min = "+str(minimum)+"     Max = "+str(maximum))
-binSize = (maximum-minimum)/numBins
+listOfMinimums = functions.createZeroedList(len(listOfDirs))
 
-#go through file sorting data
-for directory in listOfDirs:
-    success = True
-    try:
-        fs = open(directory, "r")
-        #print("Successfully opened "+directory)
-    except:
-        print("FAILED to open "+directory)
-        success = False
-    if success == True:
-        #read file
-        for line in fs:
-            cell = line.split(",")
-            listOfBins[int((float(cell[4])+abs(minimum))/binSize)-1] += 1
-fs.close()
-print("Finished.")
+#ORIGINAL
+OriginalMethod.getValues(numBins, volts, eSqH)
+OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
+'''
+#Chris' Method
+ChrisMethod.getValues(numBins, volts, eSqH)
+ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 
+#Harry's Method
+HarrysMethod.getValues(numBins, volts, eSqH)
+HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 
-baseAvg = functions.findBaselineAvg(listOfBins, numBins)
+#ORIGINAL
+TomsMethod.getValues(numBins, volts, eSqH)
+TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
+'''
 
-peakData = functions.findpeaks(listOfBins, numBins, binSize, baseAvg)
-
-
-print("Calculating peaks...")
-peakXVal = []
-for peak in peakData:
-    peakXVal.append(peak*binSize)
-print("Peaks fount at ")
-print(peakXVal)
-
-#write results to a file
-fs = open("output.csv", "w")
-j = 0
-for i in range(0, numBins, 1):
-    try:
-        if peakData[j] == i:
-            fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",10000,"+str(baseAvg[i])+"\n")
-            j+=1
-        else:
-            fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
-    except:
-        fs.write((str((i*binSize)-abs(minimum)))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
-print("Output File created.")
-fs.close()
 
