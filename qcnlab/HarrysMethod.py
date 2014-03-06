@@ -20,6 +20,7 @@ def formHistogram(outputFile, listOfDirs):
     fs = None
     maximum=0
     minimum=0
+    z=0
     global numBins, volts, eSqH, binSize, listOfBins
     listOfBins = functions.createZeroedList(numBins)
     for directory in listOfDirs:
@@ -36,7 +37,7 @@ def formHistogram(outputFile, listOfDirs):
                 valueList.append(functions.convert(cell[4]),volts,eSqH)
             while(True):
                 
-                for i in range (0, len(valueList), 1):#Start loop for at top value search
+                for i in range (z, len(valueList), 1):#Start loop for at top value search
                     if((valueList[i+2]-valueList[i+1])>((valueList[i+1]-valueList[i]))):
                         Top = valueList[i+1]
                         j=i+1 #store index for last value assessed
