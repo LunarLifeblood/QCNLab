@@ -15,11 +15,11 @@ eSqH = (2*e*e)/h
 binSize = 0.0
 listOfBins = functions.createZeroedList(numBins)
 listOfMinimums = functions.createZeroedList(len(listOfDirs))
-
+'''
 #ORIGINAL
 OriginalMethod.getValues(numBins, volts, eSqH)
 OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
-'''
+
 #Chris' Method
 ChrisMethod.getValues(numBins, volts, eSqH)
 ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
@@ -27,10 +27,10 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 #Harry's Method
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
-
+'''
 #Amazing Tom's Magnificent Method
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
-'''
+
 
 
