@@ -24,13 +24,11 @@ def createZeroedList(size): # Creates a list filled with 0
     return alist
 
 def convert(value, volts, eSqH):
-    #value = float(value)/100
-    #value = ((float(value)/10e2)/volts)/eSqH
     
-    value = (value)/10e5
-    value = value/volts
-    value = value/eSqH
-    
+    #value = (value)/10e5
+    #value = value/(volts*10e-3)
+    #value = value/eSqH
+    value = (value*10e3 * 6.626)/7800.3
     #value = (eSqH*10e5*volts)*float(value)
     
     return value

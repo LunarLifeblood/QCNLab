@@ -7,7 +7,7 @@ import TomsMethod
 listOfDirs = functions.getList(functions.askForDir())
 
 numBins = 250
-volts = 15.18
+volts = 15.18 #in mv
 #volts = float(input("What is the voltage reading?"))
 e = 1.6e-19
 h = 6.626e-34
@@ -28,7 +28,7 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 
-#ORIGINAL
+#Amazing Tom's Magnificent Method
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 '''
