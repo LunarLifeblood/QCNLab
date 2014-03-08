@@ -3,6 +3,7 @@ import OriginalMethod
 import ChrisMethod
 import HarrysMethod
 import TomsMethod
+import RecursiveMethod
 
 listOfDirs = functions.getList(functions.askForDir())
 
@@ -31,6 +32,11 @@ HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 #ORIGINAL
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
+'''
+
+#Recursive Method
+RecusiveMethod.getValues(numBins, volts, eSqH)
+RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
 '''
 
 
