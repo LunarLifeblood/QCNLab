@@ -1,5 +1,6 @@
 import os
 import copy
+import math
 
 def getList(directory):  # Function to get a list of files in the directory
     listOfFiles = []
@@ -11,6 +12,12 @@ def getList(directory):  # Function to get a list of files in the directory
 def printList(alist): # Function to print a list
     for item in alist:
         print(item)
+        
+def writeList(output, alist):
+    fs = open(output, "w")
+    for item in alist:
+        fs.write(str(item)+"\n")
+    fs.close
 
 def askForDir(): # Function to ask the user for a directory input
     directory = input("What's the directory of the files?")
@@ -27,13 +34,39 @@ def convert(value, volts, eSqH):
     #value = float(value)/100
     #value = ((float(value)/10e2)/volts)/eSqH
     
-    value = (value)/10e5
-    value = value/volts
+    value = (value*100)/10e5
+    value = value/(volts*10e-3)
     value = value/eSqH
     
     #value = (eSqH*10e5*volts)*float(value)
     
     return value
+
+def averageList(aList):
+    sum = 0
+    for item in aList:
+        sum += item
+    return sum/len(aList)
+
+def regressionFindA(xList, yList, b):
+    sumX = sumY = 0
+    for xVal, yVal in zip(xList, yList):
+        sumX += xVal
+        sumY += yVal
+    a = (sumY/len(yList)) - (b*(sumX/len(yList)))
+    return a
+
+def regressionFindB(xList, yList):
+    sumXX = sumX = sumY = sumXY = 0
+    for xVal, yVal in zip(xList, yList):
+        sumXX += math.pow(xVal, 2)
+        sumX += xVal
+        sumY += yVal
+        sumXY += (xVal*yVal)
+    sxx = sumXX - math.pow(sumX, 2)/len(yList)
+    sxy = sumXY - (sumX*sumY)/len(yList)
+    b = sxy/sxx
+    return b
 
 def findBaselineAvg(listOfBins, numBins): # Averages values in a list once, and then again ignoring 
     average = 0;
