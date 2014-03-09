@@ -3,10 +3,11 @@ import OriginalMethod
 import ChrisMethod
 import HarrysMethod
 import TomsMethod
+import RecursiveMethod
 
 listOfDirs = functions.getList(functions.askForDir())
 
-numBins = 250
+numBins = 125
 volts = 15.18
 #volts = float(input("What is the voltage reading?"))
 e = 1.6e-19
@@ -19,7 +20,7 @@ listOfMinimums = functions.createZeroedList(len(listOfDirs))
 #ORIGINAL
 OriginalMethod.getValues(numBins, volts, eSqH)
 OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
-'''
+
 #Chris' Method
 ChrisMethod.getValues(numBins, volts, eSqH)
 ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
@@ -27,10 +28,12 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 #Harry's Method
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
-
+'''
 #ORIGINAL
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 '''
 
-
+#Recursive Method
+RecursiveMethod.getValues(numBins, volts, eSqH)
+RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
