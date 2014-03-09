@@ -24,11 +24,11 @@ OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
 #Chris' Method
 ChrisMethod.getValues(numBins, volts, eSqH)
 ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
-
+'''
 #Harry's Method
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
-
+'''
 #ORIGINAL
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
