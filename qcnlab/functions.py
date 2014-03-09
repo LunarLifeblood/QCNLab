@@ -11,6 +11,10 @@ def getList(directory):  # Function to get a list of files in the directory
 def printList(alist): # Function to print a list
     for item in alist:
         print(item)
+        
+def writeList(aList, fs):
+    for item in aList:
+        fs.write(str(item)+"\n")
 
 def askForDir(): # Function to ask the user for a directory input
     directory = input("What's the directory of the files?")
@@ -24,11 +28,13 @@ def createZeroedList(size): # Creates a list filled with 0
     return alist
 
 def convert(value, volts, eSqH):
+    #value = float(value)/100
+    #value = ((float(value)/10e2)/volts)/eSqH
     
-    #value = (value)/10e5
-    #value = value/(volts*10e-3)
-    #value = value/eSqH
-    value = (value*10e3 * 6.626)/7800.3
+    value = (value)/10e5
+    value = value/volts
+    value = value/eSqH
+    
     #value = (eSqH*10e5*volts)*float(value)
     
     return value

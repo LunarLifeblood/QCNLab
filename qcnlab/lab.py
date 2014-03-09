@@ -4,10 +4,11 @@ import ChrisMethod
 import HarrysMethod
 import TomsMethod
 
-listOfDirs = functions.getList(functions.askForDir())
+#listOfDirs = functions.getList(functions.askForDir())
+listOfDirs = functions.getList("c:\\Users\\Thomas\\Desktop\\QCN\\4\\")
 
 numBins = 250
-volts = 15.18 #in mv
+volts = 18.1
 #volts = float(input("What is the voltage reading?"))
 e = 1.6e-19
 h = 6.626e-34
@@ -28,7 +29,7 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 '''
-#Amazing Tom's Magnificent Method
+#The Amazing Tom's Magnificent Method
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 

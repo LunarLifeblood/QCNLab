@@ -7,7 +7,6 @@ numBins = 0
 volts = 0
 eSqH = 0
 binSize = 0.0
-prevcell = 0
 listdiff = []
 listdata = []
 runningavg = []
@@ -16,10 +15,10 @@ listOfMinimums = []
 markers = []
 value = []
 k = 0
-kref=0
 l=0
 count2=0
 total=0
+stepsize = 4
 
 def getValues(numberBins, voltReading, eSqHVal):
     global numBins, volts, eSqH
@@ -71,25 +70,24 @@ def formHistogram(outputFile, listOfDirs):
         success = True
         try:
             fs = open(listOfDirs[i], "r")
-            print("Successfully opened "+listOfDirs[i])
+            #print("Successfully opened "+listOfDirs[i])
         except:
             print("FAILED to open "+listOfDirs[i])
             success = False
         if success == True:
             #read file
-            prevcell = 0
             listdiff = []
             runningavg = []
             markers = []
             listData = []
-            for line in fs:
-                cell = line.split(",")
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
+            for x,line in enumerate(fs):
                 listData.append(cell[4])
+                cell = line.split(",")
+                cell[4] = functions.convert(float(cell[4]), volts, eSqH)     
                 #cell[4] = float(cell[4]) + float(listOfMinimums[i])
                 #listOfBins[int(float(cell[4]+abs(minimum))/(binSize))] += 1
-                listdiff.append((cell[4] - prevcell) / ( 4*10e-7 ) )
-                prevcell = cell[4]                
+                if x >= stepsize:
+                    listdiff.append((cell[4] - listData[x-stepsize]) / ( stepsize*4*10e-7 ) )             
             #fopen=open("c:\\Users\\Thomas\\Desktop\\QCNLab\\qcnlab\\New folder\\outputFile_" + str(i)+ ".csv","w")
             count=len(listdiff)
             for x in range (3,count-2,1):
@@ -119,7 +117,6 @@ def formHistogram(outputFile, listOfDirs):
                         value.append(total/count2)
                 k=markers[x]
                 
-            #print(markers)
             
             #fopen.close()
     fs.close()
@@ -139,8 +136,7 @@ def formHistogram(outputFile, listOfDirs):
         else:
             print("ERROR")
         
-    #fopen=open("c:\\Users\\Thomas\\Desktop\\QCNLab\\qcnlab\\New folder\\outputFile.csv","w")
-    fopen = open(outputFile, "w")
+    fopen=open("c:\\Users\\Thomas\\Desktop\\QCNLab\\qcnlab\\New folder\\outputFile.csv","w")
     
     for i in range (0,numBins,1):
     
