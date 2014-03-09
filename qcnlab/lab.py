@@ -6,7 +6,8 @@ import TomsMethod
 import RecursiveMethod
 import MultiHistoMethod
 
-listOfDirs = functions.getList(functions.askForDir())
+#listOfDirs = functions.getList(functions.askForDir())
+listOfDirs = functions.getList("c:\\Users\\Thomas\\Desktop\\QCN\\4\\")
 
 numBins = 125
 volts = 15.18
@@ -30,6 +31,7 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 HarrysMethod.getValues(numBins, volts, eSqH)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 '''
+<<<<<<< HEAD
 #ORIGINAL
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
@@ -37,6 +39,12 @@ TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 #Multiple Histogram Method
 MultiHistoMethod.getValues(numBins, volts, eSqH)
 MultiHistoMethod.formHistogram("MultiHistoMethod - Output.csv", listOfDirs)
+=======
+#The Amazing Tom's Magnificent Method
+TomsMethod.getValues(numBins, volts, eSqH)
+TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
+
+>>>>>>> TomsMethod
 
 
 #Recursive Method
