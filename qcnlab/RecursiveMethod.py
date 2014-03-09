@@ -58,26 +58,27 @@ def recursiveStepSearch(lower, upper, yData, xData):
             leftData.append(yData[i])
         for i in range(mid, upper+1, 1):
             rightData.append(yData[i])
-        #print(leftData)
-        #print(rightData)
         gradientLeft = functions.regressionFindB(xData, leftData)
         gradientRight = functions.regressionFindB(xData, rightData)
-        #print("lower = "+str(lower)+"    mid = "+str(mid)+"    upper = "+str(upper)+"    lower-mid = "+str(mid-lower))
-        #print("gradLeft = "+str(gradientLeft)+"      gradRight = "+str(gradientRight))
-        if abs(gradientLeft - gradientRight) <= 0.00007:
-            if abs(gradientRight) <= 1000000000:
+        print("lower = "+str(lower)+"    mid = "+str(mid)+"    upper = "+str(upper)+"    lower-mid = "+str(mid-lower))
+        print("gradLeft = "+str(gradientLeft)+"      gradRight = "+str(gradientRight))
+        if abs(gradientLeft - gradientRight) <= 11000:
+            if abs(gradientRight) <= 5000 and abs(gradientLeft) <= 5000:
                 for i in range(lower, mid, 1):
                     averageLeft+= yData[i]
                 averageLeft = averageLeft/(mid-lower)
                 for i in range(mid, upper+1, 1):
                     averageRight+= yData[i]
                 averageRight = averageRight/((upper-mid)+1)
-                #print("averageLeft = "+str(averageLeft)+"     averageRight = "+str(averageRight))
-                if abs(averageLeft - averageRight) <= 0.1:
+                print("averageLeft = "+str(averageLeft)+"     averageRight = "+str(averageRight)+"     diff = "+str(abs(averageLeft - averageRight)))
+                if abs(averageLeft - averageRight) <= 0.3:
                     steps.append((averageLeft+averageRight)/2)
                 else:
                     recursiveStepSearch(lower, mid, yData, xData)
                     recursiveStepSearch(mid, upper, yData, xData)
+            else:
+                recursiveStepSearch(lower, mid, yData, xData)
+                recursiveStepSearch(mid, upper, yData, xData)
         elif lower == mid-1:
             print("woo!")
             averageLeft= yData[lower]
@@ -85,7 +86,7 @@ def recursiveStepSearch(lower, upper, yData, xData):
                 averageRight+= yData[i]
             averageRight = averageRight/((upper-mid)+1)
             #print("averageLeft = "+str(averageLeft)+"     averageRight = "+str(averageRight))
-            if abs(averageLeft - averageRight) <= 0.06:
+            if abs(averageLeft - averageRight) <= 0.3:
                 steps.append((averageLeft+averageRight)/2)
             else:
                 recursiveStepSearch(lower, mid, yData, xData)
@@ -158,7 +159,7 @@ def formHistogram(outputFile, listOfDirs):
             #fileName = "listOfConds 2 "+str(i)+".csv"
             #functions.writeList(fileName, condData)
             recursiveStepSearch(0, len(condData)-1, condData, timeData)
-            print(steps)
+            #print(steps)
             steps = removeDuplicates(steps)
             steps = removeMinMaxValues(steps)
             print("Num steps: "+str(len(steps))+"      RecursionCount = "+str(recursionCount))

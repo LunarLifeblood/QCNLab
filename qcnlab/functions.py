@@ -42,6 +42,12 @@ def convert(value, volts, eSqH):
     
     return value
 
+def averageList(aList):
+    sum = 0
+    for item in aList:
+        sum += item
+    return sum/len(aList)
+
 def regressionFindA(xList, yList, b):
     sumX = sumY = 0
     for xVal, yVal in zip(xList, yList):
