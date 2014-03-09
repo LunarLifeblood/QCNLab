@@ -10,37 +10,100 @@ binSize = 0.0
 listOfBins = []
 listOfMinimums = []
 condData = []
+timeData = []
 steps = []
-
+recursionCount = 0
 def getValues(numberBins, voltReading, eSqHVal):
     global numBins, volts, eSqH
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
+    
+def removeDuplicates(aList):
+    previousItem = 0
+    fixedList = []
+    for i, item in enumerate(aList):
+        if abs(item - previousItem) >= 0.00005:
+            if i == 0:
+                previousItem = item
+                continue
+            else:
+                fixedList.append(previousItem)
+        previousItem = item
+      
+    if aList[-1] != previousItem:
+        fixedList.append(previousItem)
+    fixedList.append(aList[-1])
+    
+    return fixedList
 
-def recursiveStepSearch(lower, upper, data):
-    global steps
+def removeMinMaxValues(aList):
+    fixedList = []
+    for item in aList:
+        if item < 14 and item > 0.3:
+            fixedList.append(item)
+    return fixedList
+
+def recursiveStepSearch(lower, upper, yData, xData):
+    global steps, recursionCount
+    recursionCount+=1
     mid = int((lower+upper)/2)
-    averageLeft = 0
-    averageRight = 0
-    for i in range(lower, mid, 1):
-        averageLeft+= data[i]
-    averageLeft = averageLeft/(mid-lower)
-    for i in range(mid, upper+1, 1):
-        averageRight+=data[i]
-    averageRight = averageRight/(upper-mid)
-    if abs(averageLeft-averageRight) > eSqH*0.8:
-        recursiveStepSearch(lower, mid, data)
-        recursiveStepSearch(mid, upper, data)
-    elif abs(averageLeft-averageRight) > eSqH*0.1:
-        steps.append((averageLeft+averageRight)/2)
-    else:
-        print("UH OH")
+    if lower != mid and lower != mid-1 :
+        averageLeft = 0
+        averageRight = 0
+
+        leftData = []
+        rightData = []
+        for i in range(lower, mid, 1):
+            leftData.append(yData[i])
+        for i in range(mid, upper+1, 1):
+            rightData.append(yData[i])
+        #print(leftData)
+        #print(rightData)
+        gradientLeft = functions.regressionFindB(xData, leftData)
+        gradientRight = functions.regressionFindB(xData, rightData)
+        #print("lower = "+str(lower)+"    mid = "+str(mid)+"    upper = "+str(upper)+"    lower-mid = "+str(mid-lower))
+        #print("gradLeft = "+str(gradientLeft)+"      gradRight = "+str(gradientRight))
+        if abs(gradientLeft - gradientRight) <= 0.00007:
+            if abs(gradientRight) <= 1000000000:
+                for i in range(lower, mid, 1):
+                    averageLeft+= yData[i]
+                averageLeft = averageLeft/(mid-lower)
+                for i in range(mid, upper+1, 1):
+                    averageRight+= yData[i]
+                averageRight = averageRight/((upper-mid)+1)
+                #print("averageLeft = "+str(averageLeft)+"     averageRight = "+str(averageRight))
+                if abs(averageLeft - averageRight) <= 0.1:
+                    steps.append((averageLeft+averageRight)/2)
+                else:
+                    recursiveStepSearch(lower, mid, yData, xData)
+                    recursiveStepSearch(mid, upper, yData, xData)
+        elif lower == mid-1:
+            print("woo!")
+            averageLeft= yData[lower]
+            for i in range(mid, upper+1, 1):
+                averageRight+= yData[i]
+            averageRight = averageRight/((upper-mid)+1)
+            #print("averageLeft = "+str(averageLeft)+"     averageRight = "+str(averageRight))
+            if abs(averageLeft - averageRight) <= 0.06:
+                steps.append((averageLeft+averageRight)/2)
+            else:
+                recursiveStepSearch(lower, mid, yData, xData)
+                recursiveStepSearch(mid, upper, yData, xData)
+            
+            
+            
+            
+        else:
+            recursiveStepSearch(lower, mid, yData, xData)
+            recursiveStepSearch(mid, upper, yData, xData)
+        
+
     
     
 
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, listOfMinimums, condData
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, listOfMinimums, condData, steps, timeData
     fs = None
     listOfBins = functions.createZeroedList(numBins)
     listOfMinimums = functions.createZeroedList(len(listOfDirs))
@@ -91,10 +154,22 @@ def formHistogram(outputFile, listOfDirs):
             for line in fs:
                 cell = line.split(",")
                 condData.append(functions.convert(float(cell[4]), volts, eSqH))
-                #cell[4] = float(cell[4]) + float(listOfMinimums[i])
-                listOfBins[int(float(cell[4]+abs(minimum))/(binSize))] += 1
+                timeData.append(float(cell[3]))
+            #fileName = "listOfConds 2 "+str(i)+".csv"
+            #functions.writeList(fileName, condData)
+            recursiveStepSearch(0, len(condData)-1, condData, timeData)
+            print(steps)
+            steps = removeDuplicates(steps)
+            steps = removeMinMaxValues(steps)
+            print("Num steps: "+str(len(steps))+"      RecursionCount = "+str(recursionCount))
+            print(steps)
+            for item in steps:
+                listOfBins[int(float(item+abs(minimum))/(binSize))] += 1
+            steps = []
+            condData = []
+            timeData =[]
+                
     fs.close()
-    print("Finished.")
     
     #Estimate peaks
     baseAvg = functions.findBaselineAvg(listOfBins, numBins)
@@ -114,7 +189,7 @@ def formHistogram(outputFile, listOfDirs):
     for i in range(0, numBins, 1):
         try:
             if peakData[j] == i:
-                fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",10000,"+str(baseAvg[i])+"\n")
+                fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",20,"+str(baseAvg[i])+"\n")
                 j+=1
             else:
                 fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
@@ -122,4 +197,3 @@ def formHistogram(outputFile, listOfDirs):
             fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
     print("Output File created.")
     fs.close()
-
