@@ -109,13 +109,14 @@ def formHistogram(outputFile, listOfDirs):
                     total = 0
                     #print("HI")
                     for l in range (markers[x-1]+1,markers[x],1):
-                        count2 = count2 + 1
-                        total = listData[l]+total
+                        #count2 = count2 + 1
+                        #total = listData[l]+total
+                        value.append(listData[l])
                         #print("HELLO")
-                    if count2>0:
+                    #if count2>0:
                         #print("HOWDY")
-                        value.append(total/count2)
-                k=markers[x]
+                        #value.append(total/count2)
+                    k=markers[x]
                 
             
             #fopen.close()
