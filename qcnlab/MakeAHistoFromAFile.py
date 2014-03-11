@@ -1,7 +1,7 @@
 import functions
 listOfDirs = functions.getList(functions.askForDir())
-listOfBins = []
 numBins = 200
+listOfBins = functions.createZeroedList(numBins)
 for directory in listOfDirs:
     fs = open(directory, "r")
     data = []
@@ -13,7 +13,7 @@ for directory in listOfDirs:
     maximum = max(data)
     binSize = (maximum-minimum)/(numBins-1)
     for item in data:
-        listOfBins[int((item+abs(minimum))/binSize)] += 1
+        listOfBins[int(float(item+abs(minimum))/binSize)] += 1
     
 fs = open("somefile.csv", "w")
 halfBin = binSize/2
