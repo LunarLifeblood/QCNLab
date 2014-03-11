@@ -6,6 +6,7 @@ import TomsMethod
 import TomsMethodv2
 import RecursiveMethod
 import MultiHistoMethod
+import LineDrawing
 
 listOfDirs = functions.getList(functions.askForDir())
 #listOfDirs = functions.getList("c:\\Users\\Thomas\\Desktop\\QCN\\4\\")
@@ -53,4 +54,9 @@ TomsMethodv2.formHistogram("Tomoutput_v2.csv", listOfDirs)
 #Recursive Method
 RecursiveMethod.getValues(numBins, volts, eSqH)
 RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
+'''
+'''
+#Line Drawing
+LineDrawing.getValues(numBins, volts, eSqH)
+LineDrawing.formHistogram("LineDrawing - Output.csv", listOfDirs)
 '''
