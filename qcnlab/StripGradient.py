@@ -8,16 +8,21 @@ volts = 0
 eSqH = 0
 binSize = 0.0
 listOfBins = []
-listOfMinimums = []
+condData = []
+timeData = []
+stripSize = 10
+
 
 def getValues(numberBins, voltReading, eSqHVal):
     global numBins, volts, eSqH
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
+    
+    
 
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, listOfMinimums
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize
     fs = None
     listOfBins = functions.createZeroedList(numBins)
     listOfMinimums = functions.createZeroedList(len(listOfDirs))
@@ -59,7 +64,7 @@ def formHistogram(outputFile, listOfDirs):
         success = True
         try:
             fs = open(listOfDirs[i], "r")
-            #print("Successfully opened "+listOfDirs[i])
+            #print("Successfully opened "+directory)
         except:
             print("FAILED to open "+listOfDirs[i])
             success = False
@@ -67,11 +72,32 @@ def formHistogram(outputFile, listOfDirs):
             #read file
             for line in fs:
                 cell = line.split(",")
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
-                #cell[4] = float(cell[4]) + float(listOfMinimums[i])
-                listOfBins[int(float(cell[4]+abs(minimum))/(binSize))] += 1
+                condData.append(functions.convert(float(cell[4]), volts, eSqH))
+                timeData.append(float(cell[3]))
+
+
+
+            marker = 0
+            while marker < (2500-stripSize):
+                stripDataX = []
+                stripDataY = []
+                for i in range (marker, marker+stripSize, 1):
+                    stripDataX.append(timeData[i])
+                    stripDataY.append(condData[i])
+                b = functions.regressionFindB(stripDataX, stripDataY)
+                #a = functions.regressionFindA(stripDataX, stripDataY, b)
+                if abs(b) < 1000:
+                    sumY = 0
+                    for item in stripDataY:
+                        sumY += item
+                    sumY = sumY/stripSize
+                listOfBins[int(float(sumY+abs(minimum))/(binSize))] += 1
+                
+
+            condData = []
+            timeData =[]
+                
     fs.close()
-    print("Finished.")
     
     #Estimate peaks
     baseAvg = functions.findBaselineAvg(listOfBins, numBins)
@@ -91,7 +117,7 @@ def formHistogram(outputFile, listOfDirs):
     for i in range(0, numBins, 1):
         try:
             if peakData[j] == i:
-                fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",10000,"+str(baseAvg[i])+"\n")
+                fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",20,"+str(baseAvg[i])+"\n")
                 j+=1
             else:
                 fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
@@ -99,4 +125,3 @@ def formHistogram(outputFile, listOfDirs):
             fs.write((str((i*binSize)-abs(minimum)+halfBin))+","+str(listOfBins[i])+",0,"+str(baseAvg[i])+"\n")
     print("Output File created.")
     fs.close()
-
