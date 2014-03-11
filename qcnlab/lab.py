@@ -55,8 +55,7 @@ TomsMethodv2.formHistogram("Tomoutput_v2.csv", listOfDirs)
 RecursiveMethod.getValues(numBins, volts, eSqH)
 RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
 '''
-'''
+
 #Strip Gradient
 StripGradient.getValues(numBins, volts, eSqH)
 StripGradient.formHistogram("StripGradient - Output.csv", listOfDirs)
-'''

@@ -10,7 +10,9 @@ binSize = 0.0
 listOfBins = []
 condData = []
 timeData = []
-stripSize = 10
+stripSize = 5
+numSteps = 0
+steps = []
 
 
 def getValues(numberBins, voltReading, eSqHVal):
@@ -22,7 +24,7 @@ def getValues(numberBins, voltReading, eSqHVal):
     
 
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize, numSteps, steps
     fs = None
     listOfBins = functions.createZeroedList(numBins)
     listOfMinimums = functions.createZeroedList(len(listOfDirs))
@@ -74,8 +76,11 @@ def formHistogram(outputFile, listOfDirs):
                 cell = line.split(",")
                 condData.append(functions.convert(float(cell[4]), volts, eSqH))
                 timeData.append(float(cell[3]))
-
-
+                '''
+                fw = open("voltageValsforstripgradfile.csv", "a")
+                fw.write(str(functions.convert(float(cell[4]), volts, eSqH))+"\n")
+                fw.close()
+                '''
 
             marker = 0
             while marker < (2500-stripSize):
@@ -85,20 +90,27 @@ def formHistogram(outputFile, listOfDirs):
                     stripDataX.append(timeData[i])
                     stripDataY.append(condData[i])
                 b = functions.regressionFindB(stripDataX, stripDataY)
+                fw = open("gradients for strip gradients.csv", "a")
+                fw.write(str(b)+"\n")
+                fw.close()
                 #a = functions.regressionFindA(stripDataX, stripDataY, b)
-                if abs(b) < 1000:
-                    sumY = 0
+                sumY = 0
+                if abs(b) < 0.1:
+                    numSteps += 1
                     for item in stripDataY:
                         sumY += item
                     sumY = sumY/stripSize
+                    steps.append(sumY)
                 listOfBins[int(float(sumY+abs(minimum))/(binSize))] += 1
+                marker += stripSize
                 
 
             condData = []
             timeData =[]
                 
     fs.close()
-    
+    print("Number of steps: "+str(numSteps))
+    print(steps)
     #Estimate peaks
     baseAvg = functions.findBaselineAvg(listOfBins, numBins)
     peakData = functions.findpeaks(listOfBins, numBins, binSize, baseAvg)
