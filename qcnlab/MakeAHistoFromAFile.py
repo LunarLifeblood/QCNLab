@@ -7,7 +7,7 @@ for directory in listOfDirs:
     data = []
     for line in fs:
         column = line.split(",")
-        data.append(column[2])# <-----TOM make this one point to the correct column
+        data.append(float(column[2]))# <-----TOM make this one point to the correct column
     fs.close()
     minimum = min(data)
     maximum = max(data)
