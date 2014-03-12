@@ -55,8 +55,8 @@ TomsMethodv2.formHistogram("Tomoutput_v2.csv", listOfDirs)
 RecursiveMethod.getValues(numBins, volts, eSqH)
 RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
 '''
-'''
+
 #Line Drawing
 LineDrawing.getValues(numBins, volts, eSqH)
 LineDrawing.formHistogram("LineDrawing - Output.csv", listOfDirs)
-'''
+

@@ -91,20 +91,21 @@ def formHistogram(outputFile, listOfDirs):
                 startLoc.append(marker)
                 marker+=5
                 lineGrads.append(functions.regressionFindB(stripDataX, stripDataY))
-                lineIntercepts(functions.regressionFindA(stripDataX, stripDataY, lineGrads[-1]))
+                lineIntercepts.append(functions.regressionFindA(stripDataX, stripDataY, lineGrads[-1]))
                 while marker < 2500:
                     yReg = lineIntercepts[-1] + lineGrads[-1]*timeData[marker]
                     diffRegReal = abs(yReg - condData[marker])
-                    if diffRegReal > 10: # FudgeFactor
+                    if diffRegReal > 0.001: # FudgeFactor
                         deviations.append(marker)
                         if len(deviations) == 3: # sensitivity to change
                             marker-= 3
                             break
+                    marker += 1
                         
-                
+                print(lineGrads)
                 for i, gradient in enumerate(lineGrads):
-                    if abs(gradient) < 1000:
-                        if i != len(lineGrads)-1: # FudgeFactor
+                    if abs(gradient) < 1000:# FudgeFactor
+                        if i != len(lineGrads)-1: 
                             sumY = 0
                             for j in range (startLoc[i], startLoc[i+1], 1):
                                 sumY += condData[j]
