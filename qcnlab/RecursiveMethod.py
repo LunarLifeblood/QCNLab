@@ -18,31 +18,6 @@ def getValues(numberBins, voltReading, eSqHVal):
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
-    
-def removeDuplicates(aList):
-    previousItem = 0
-    fixedList = []
-    for i, item in enumerate(aList):
-        if abs(item - previousItem) >= 0.00005:
-            if i == 0:
-                previousItem = item
-                continue
-            else:
-                fixedList.append(previousItem)
-        previousItem = item
-      
-    if aList[-1] != previousItem:
-        fixedList.append(previousItem)
-    fixedList.append(aList[-1])
-    
-    return fixedList
-
-def removeMinMaxValues(aList):
-    fixedList = []
-    for item in aList:
-        if item < 14 and item > 0.3:
-            fixedList.append(item)
-    return fixedList
 
 def recursiveStepSearch(lower, upper, yData, xData):
     global steps, recursionCount
@@ -160,8 +135,8 @@ def formHistogram(outputFile, listOfDirs):
             #functions.writeList(fileName, condData)
             recursiveStepSearch(0, len(condData)-1, condData, timeData)
             #print(steps)
-            steps = removeDuplicates(steps)
-            steps = removeMinMaxValues(steps)
+            steps = functions.removeDuplicates(steps)
+            steps = functions.removeMinMaxValues(steps)
             print("Num steps: "+str(len(steps))+"      RecursionCount = "+str(recursionCount))
             print(steps)
             for item in steps:
