@@ -30,6 +30,30 @@ def createZeroedList(size): # Creates a list filled with 0
         alist.append(0)
     return alist
 
+def removeMinMaxValues(aList):
+    fixedList = []
+    for item in aList:
+        if item < 14 and item > 0.3:
+            fixedList.append(item)
+    return fixedList
+
+def removeDuplicates(aList):
+    previousItem = 0
+    fixedList = []
+    for i, item in enumerate(aList):
+        if abs(item - previousItem) >= 0.00005:
+            if i == 0:
+                previousItem = item
+                continue
+            else:
+                fixedList.append(previousItem)
+        previousItem = item
+      
+    if aList[-1] != previousItem:
+        fixedList.append(previousItem)
+    fixedList.append(aList[-1])
+    return fixedList
+
 def convert(value, volts, eSqH):
     #value = float(value)/100
     #value = ((float(value)/10e2)/volts)/eSqH
