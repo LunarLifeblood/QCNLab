@@ -16,6 +16,7 @@ steps = []
 shifts = []
 
 
+
 def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
@@ -33,6 +34,7 @@ def formHistogram(outputFile, listOfDirs):
     binSize = (maximum-minimum)/(numBins-1)
     print("BinSize = "+str(binSize))
     
+    print("Finding steps...")
     #go through file sorting data
     for i in range(0, len(listOfDirs), 1):
         success = True
@@ -76,7 +78,7 @@ def formHistogram(outputFile, listOfDirs):
                         steps.append(sumY)
                     if len(steps) > 0:
                         steps = functions.removeDuplicates(steps)
-                        #steps = functions.removeMinMaxValues(steps)
+                        steps = functions.removeMinMaxValues(steps)
                     marker += stripSize
                 for item in steps:
                         listOfBins[int(float(item+abs(minimum))/(binSize))] += 1

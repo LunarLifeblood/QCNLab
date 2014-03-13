@@ -13,11 +13,18 @@ condData = []
 timeData = []
 steps = []
 recursionCount = 0
-def getValues(numberBins, voltReading, eSqHVal):
-    global numBins, volts, eSqH
+shifts = []
+
+
+
+def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
+    global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
+    minimum = minVal
+    maximum = maxVal
+    shifts = shiftList
 
 def recursiveStepSearch(lower, upper, yData, xData):
     global steps, recursionCount
@@ -129,7 +136,7 @@ def formHistogram(outputFile, listOfDirs):
             #read file
             for line in fs:
                 cell = line.split(",")
-                condData.append(functions.convert(float(cell[4]), volts, eSqH))
+                condData.append(functions.convert(float(cell[4]), volts, eSqH) - shifts[i])
                 timeData.append(float(cell[3]))
             #fileName = "listOfConds 2 "+str(i)+".csv"
             #functions.writeList(fileName, condData)

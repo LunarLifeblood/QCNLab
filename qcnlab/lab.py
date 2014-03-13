@@ -11,7 +11,7 @@ import StripGradient
 listOfDirs = functions.getList(functions.askForDir())
 #listOfDirs = functions.getList("c:\\Users\\Thomas\\Desktop\\QCN\\4\\")
 
-numBins = 125
+numBins = 199
 volts = 15.18
 #volts = float(input("What is the voltage reading?"))
 e = 1.6e-19
@@ -76,7 +76,7 @@ findMinAndMax()
 
 '''
 #ORIGINAL
-OriginalMethod.getValues(numBins, volts, eSqH)
+OriginalMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
 '''
 '''
@@ -104,15 +104,15 @@ TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 TomsMethodv2.getValues(numBins, volts, eSqH)
 TomsMethodv2.formHistogram("Tomoutput_v2.csv", listOfDirs)
 '''
-'''
-#Recursive Method
-RecursiveMethod.getValues(numBins, volts, eSqH)
-RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
-'''
 
+#Recursive Method
+RecursiveMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
+RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
+
+'''
 #Strip Gradient
 StripGradient.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 StripGradient.formHistogram("StripGradient - Output2.csv", listOfDirs)
-
+'''
 
 
