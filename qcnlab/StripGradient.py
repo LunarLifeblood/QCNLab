@@ -13,18 +13,20 @@ timeData = []
 stripSize = 5
 numSteps = 0
 steps = []
+shifts = []
 
 
-def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal):
-    global numBins, volts, eSqH, minimum, maximum
+def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
+    global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
     minimum = minVal
     maximum = maxVal
+    shifts = shiftList
 
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize, numSteps, steps
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize, numSteps, steps, shifts
     listOfBins = functions.createZeroedList(numBins)
     print("Number of files opened: "+str(len(listOfDirs)))
     print("Min = "+str(minimum)+"     Max = "+str(maximum))
@@ -44,7 +46,7 @@ def formHistogram(outputFile, listOfDirs):
             #read file
             for line in fs:
                 cell = line.split(",")
-                condData.append(functions.convert(float(cell[4]), volts, eSqH))
+                condData.append(functions.convert(float(cell[4]), volts, eSqH) - shifts[i])
                 timeData.append(float(cell[3]))
                 '''
                 fw = open("voltageValsforstripgradfile.csv", "a")
@@ -74,7 +76,7 @@ def formHistogram(outputFile, listOfDirs):
                         steps.append(sumY)
                     if len(steps) > 0:
                         steps = functions.removeDuplicates(steps)
-                        steps = functions.removeMinMaxValues(steps)
+                        #steps = functions.removeMinMaxValues(steps)
                     marker += stripSize
                 for item in steps:
                         listOfBins[int(float(item+abs(minimum))/(binSize))] += 1

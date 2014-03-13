@@ -20,13 +20,15 @@ eSqH = (2*e*e)/h
 binSize = 0.0
 minimum = 0
 maximum = 0
+shifts = []
 
 def findMinAndMax():
-    global minimum, maximum
+    global minimum, maximum, shifts
     fs = None
     print("Reading in data...")
     # read through files and fine minimum/maximum data
     for i, directory in enumerate(listOfDirs):
+        data = []
         success = True
         try:
             fs = open(directory, "r")
@@ -39,11 +41,33 @@ def findMinAndMax():
             for line in fs:
                 cell = line.split(",")
                 cell[4] = functions.convert(float(cell[4]), volts, eSqH)
+                if cell[4] < 0.3:
+                    data.append(cell[4])
                 if float(cell[4]) > maximum:
                     maximum = float(cell[4])
                 elif float(cell[4]) < minimum:
                     minimum = float(cell[4])
+            
+            if len(data) > 0:
+                avgData = 0
+                for item in data:
+                    avgData += item
+                avgData = avgData/len(data)
+                shifts.append(avgData)
+            else:
+                shifts.append(-10000)
+ 
+    avgShift = 0 
+    count = 0  
+    for item in shifts:
+        if item != -10000:
+            avgShift += item
+            count += 1
 
+    avgShift = avgShift/count
+    for i, item in enumerate(shifts):
+        if item == -10000:
+            shifts[i] = avgShift
 
 
 
@@ -87,8 +111,8 @@ RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
 '''
 
 #Strip Gradient
-StripGradient.getValues(numBins, volts, eSqH, minimum, maximum)
-StripGradient.formHistogram("StripGradient - Output.csv", listOfDirs)
+StripGradient.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
+StripGradient.formHistogram("StripGradient - Output2.csv", listOfDirs)
 
 
 
