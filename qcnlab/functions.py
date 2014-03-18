@@ -9,6 +9,13 @@ def getList(directory):  # Function to get a list of files in the directory
             listOfFiles.append(os.path.join(root, file))
     return listOfFiles
         
+def findStepDiffs(stepVals):
+    stepDiffs = []
+    for i in range(0, len(stepVals), 1):
+        for j in range(0, len(stepVals), 1):
+            stepDiffs.append(stepVals[i] - stepVals[j])
+    return stepDiffs
+             
 def printList(alist): # Function to print a list
     for item in alist:
         print(item)
@@ -30,12 +37,13 @@ def createZeroedList(size): # Creates a list filled with 0
         alist.append(0)
     return alist
 
-def removeMinMaxValues(aList):
+def removeMinMaxValues(aList, maximum):
     fixedList = []
     for item in aList:
-        if item < 14 and item > 0.3:
+        if item < maximum-0.1 and item > 0.3:
             fixedList.append(item)
     return fixedList
+
 
 def removeDuplicates(aList):
     previousItem = 0

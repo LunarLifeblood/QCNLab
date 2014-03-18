@@ -6,20 +6,21 @@ eSqH = 0
 
 binSize = 0.0
 listOfBins = []
+shifts = []
 
-
-def getValues(numberBins, voltReading, eSqHVal):
-    global numBins, volts, eSqH
+def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
+    global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
+    minimum = minVal
+    maximum = maxVal
+    shifts = shiftList
     
 def formHistogram(outputFile, listOfDirs):
     valueList = []
     stepListVoltageValues = []
     fs = None
-    maximum=0
-    minimum=0
     z=3
     something = int(z/3)
     j=0
@@ -29,33 +30,7 @@ def formHistogram(outputFile, listOfDirs):
     listOfBins = functions.createZeroedList(numBins)
     
     
-    
-    for directory in listOfDirs:
-        success = True
-        try:
-            fs = open(directory, "r")
-            #print("Successfully opened "+directory)
-        except:
-            print("FAILED to open "+directory)
-            success = False
-        if success == True:
-            #read file
-            for line in fs:
-                cell = line.split(",")
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
-                if float(cell[4]) > maximum:
-                    maximum = float(cell[4])
-                elif float(cell[4]) < minimum:
-                    minimum = float(cell[4])
-
-    
-    
-    
-    
-    
-    
-    
-    for directory in listOfDirs:
+    for count, directory in enumerate(listOfDirs):
         success = True
         try:
             fs = open(directory, "r")
@@ -68,8 +43,9 @@ def formHistogram(outputFile, listOfDirs):
             for line in fs:
                 cell = line.split(",")
                 print(cell[4]+"   "+str(float(cell[4])))
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
-                valueList.append(float(cell[4])) 
+                cell[4] = functions.convert(float(cell[4]), volts, eSqH) - shifts[count]
+                if cell[4] > 0.3 and cell[4] < 14:
+                    valueList.append(float(cell[4])) 
             for i in range (z, len(valueList), 1):#Start loop for at top value search
                 Top=None
                 if((valueList[i]-valueList[i-something])>((valueList[i-something]-valueList[i-2*something]))):
