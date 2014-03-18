@@ -11,8 +11,8 @@ import StripGradient
 listOfDirs = functions.getList(functions.askForDir())
 #listOfDirs = functions.getList("c:\\Users\\Thomas\\Desktop\\QCN\\4\\")
 
-numBins = 199
-volts = 15.18
+numBins = 250
+volts = 15.07
 #volts = float(input("What is the voltage reading?"))
 e = 1.6e-19
 h = 6.626e-34
@@ -48,7 +48,7 @@ def findMinAndMax():
                 elif float(cell[4]) < minimum:
                     minimum = float(cell[4])
             
-            if len(data) > 0:
+            if len(data) > 20:
                 avgData = 0
                 for item in data:
                     avgData += item
@@ -76,6 +76,7 @@ findMinAndMax()
 
 '''
 #ORIGINAL
+print("~~Original Method ~~")
 OriginalMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 OriginalMethod.formHistogram("originaloutput.csv", listOfDirs)
 '''
@@ -86,31 +87,37 @@ ChrisMethod.formHistogram("Chrisoutput.csv", listOfDirs)
 '''
 '''
 #Harry's Method
-HarrysMethod.getValues(numBins, volts, eSqH)
+print("~~Harry's Method ~~")
+HarrysMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 HarrysMethod.formHistogram("Harryoutput.csv", listOfDirs)
 '''
 '''
 #Multiple Histogram Method
-MultiHistoMethod.getValues(numBins, volts, eSqH)
+print("~~Multiple Histogram Method ~~")
+MultiHistoMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 MultiHistoMethod.formHistogram("MultiHistoMethod - Output.csv", listOfDirs)
 '''
 '''
 #The Amazing Tom's Magnificent Method
+print("~~Tom's Method V1 ~~")
 TomsMethod.getValues(numBins, volts, eSqH)
 TomsMethod.formHistogram("Tomoutput.csv", listOfDirs)
 '''
 '''
 #The Amazing Tom's Magnificent Method Version 2
+print("~~Tom's Method V2~~")
 TomsMethodv2.getValues(numBins, volts, eSqH)
 TomsMethodv2.formHistogram("Tomoutput_v2.csv", listOfDirs)
 '''
 
 #Recursive Method
+print("~~Recursive Method ~~")
 RecursiveMethod.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
-RecursiveMethod.formHistogram("Recursive - Output.csv", listOfDirs)
+RecursiveMethod.formHistogram("Recursive - Output10.csv", listOfDirs)
 
 '''
 #Strip Gradient
+print("~~Strip Gradient Method ~~")
 StripGradient.getValues(numBins, volts, eSqH, minimum, maximum, shifts)
 StripGradient.formHistogram("StripGradient - Output2.csv", listOfDirs)
 '''

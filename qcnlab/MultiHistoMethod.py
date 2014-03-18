@@ -11,46 +11,21 @@ listOfBins = []
 listOfBins2 = []
 listOfMinimums = []
 halfBin = 0
+shifts = []
 
-def getValues(numberBins, voltReading, eSqHVal):
-    global numBins, volts, eSqH
+def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
+    global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
     volts = voltReading
     eSqH = eSqHVal
+    minimum = minVal
+    maximum = maxVal
+    shifts = shiftList
 
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, listOfMinimums, listOfBins2, halfBin
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins,  listOfBins2, halfBin, shifts
     fs = None
     listOfBins = functions.createZeroedList(numBins)
-    listOfMinimums = functions.createZeroedList(len(listOfDirs))
-    print("Reading in data...")
-    # read through files and fine minimum/maximum data
-    count = 0
-    for directory in listOfDirs:
-        success = True
-        try:
-            fs = open(directory, "r")
-            #print("Successfully opened "+directory)
-        except:
-            print("FAILED to open "+directory)
-            success = False
-        if success == True:
-            #read file
-            minTemp = 0
-            maxTemp = 0
-            for line in fs:
-                cell = line.split(",")
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
-                if float(cell[4]) > maximum:
-                    maximum = float(cell[4])
-                elif float(cell[4]) < minimum:
-                    minimum = float(cell[4])
-                if float(cell[4]) > maxTemp:
-                    maxTemp = float(cell[4])
-                elif float(cell[4]) < minTemp:
-                    minTemp = float(cell[4])
-            listOfMinimums[count] = abs(minTemp)
-            count+=1
     print("Number of files opened: "+str(len(listOfDirs)))
     print("Min = "+str(minimum)+"     Max = "+str(maximum))
     binSize = (maximum-minimum)/(numBins-1)
@@ -71,10 +46,11 @@ def formHistogram(outputFile, listOfDirs):
             #read file
             for line in fs:
                 cell = line.split(",")
-                cell[4] = functions.convert(float(cell[4]), volts, eSqH)
-                listOfBins2[int(float(cell[4]+abs(minimum))/(binSize))] += 1
+                cell[4] = functions.convert(float(cell[4]), volts, eSqH) - shifts[i]
+                if cell[4] < 14 and cell[4] > 0.3:
+                    listOfBins2[int(float(cell[4]+abs(minimum))/(binSize))] += 1
             
-             #Estimate peaks
+            #Estimate peaks
             baseAvg = functions.findBaselineAvg(listOfBins2, numBins)
             peakData = functions.findpeaks(listOfBins2, numBins, binSize, baseAvg)
             temp = []
