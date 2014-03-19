@@ -1,6 +1,5 @@
 import functions
 
-# Opens the files to read the data
 maximum = 0.0
 minimum = 0.0
 numBins = 0
@@ -14,7 +13,9 @@ stripSize = 5
 numSteps = 0
 steps = []
 shifts = []
+numEmpty = 0
 
+#Function to go get the necessary values
 def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
@@ -24,8 +25,9 @@ def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     maximum = maxVal
     shifts = shiftList
 
+#Function to calculate a histogram
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize, numSteps, steps, shifts
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, condData, timeData, stripSize, numSteps, steps, shifts, numEmpty
     listOfBins = functions.createZeroedList(numBins)
     print("Number of files opened: "+str(len(listOfDirs)))
     print("Min = "+str(minimum)+"     Max = "+str(maximum))
@@ -44,15 +46,11 @@ def formHistogram(outputFile, listOfDirs):
             success = False
         if success == True:
             #read file
+            Empty = True
             for line in fs:
                 cell = line.split(",")
                 condData.append(functions.convert(float(cell[4]), volts, eSqH) - shifts[i])
                 timeData.append(float(cell[3]))
-                '''
-                fw = open("voltageValsforstripgradfile.csv", "a")
-                fw.write(str(functions.convert(float(cell[4]), volts, eSqH))+"\n")
-                fw.close()
-                '''
             marker = 0
             while marker < stripSize:
                 steps = []
@@ -63,12 +61,8 @@ def formHistogram(outputFile, listOfDirs):
                         stripDataX.append(timeData[i])
                         stripDataY.append(condData[i])
                     b = functions.regressionFindB(stripDataX, stripDataY)
-                    fw = open("gradients for strip gradients.csv", "a")
-                    fw.write(str(b)+"\n")
-                    fw.close()
-                    #a = functions.regressionFindA(stripDataX, stripDataY, b)
                     sumY = 0
-                    if abs(b) < 0.1: # Fudge Factor
+                    if abs(b) < 10000: # Fudge Factor
                         numSteps += 1
                         for item in stripDataY:
                             sumY += item
@@ -76,18 +70,19 @@ def formHistogram(outputFile, listOfDirs):
                         steps.append(sumY)
                     if len(steps) > 0:
                         steps = functions.removeDuplicates(steps)
-                        steps = functions.removeMinMaxValues(steps)
+                        steps = functions.removeMinMaxValues(steps, max(condData))
+                        Empty = False
                     marker += stripSize
                 for item in steps:
                         listOfBins[int(float(item+abs(minimum))/(binSize))] += 1
                 marker += 1
-
+            if Empty == True:
+                numEmpty+=1
             condData = []
             timeData =[]
                 
     fs.close()
-    print("Number of steps: "+str(numSteps))
-    print(steps)
+    print("Number of files where steps could not be detected: "+str(numEmpty))
     
     #Estimate peaks
     baseAvg = functions.findBaselineAvg(listOfBins, numBins)

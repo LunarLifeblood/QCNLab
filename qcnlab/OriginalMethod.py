@@ -9,7 +9,8 @@ eSqH = 0
 binSize = 0.0
 listOfBins = []
 listOfMinimums = []
-
+shifts = []
+#Function to go get the necessary values
 def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
@@ -19,11 +20,11 @@ def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     maximum = maxVal
     shifts = shiftList
 
+#Function to calculate a histogram
 def formHistogram(outputFile, listOfDirs):
-    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins
+    global maximum, minimum, numBins, volts, eSqH, binSize, listofBins, shifts
     fs = None
     listOfBins = functions.createZeroedList(numBins)
-    # read through files and fine minimum/maximum data
     print("Number of files opened: "+str(len(listOfDirs)))
     print("Min = "+str(minimum)+"     Max = "+str(maximum))
     binSize = (maximum-minimum)/(numBins-1)
@@ -43,7 +44,6 @@ def formHistogram(outputFile, listOfDirs):
             for line in fs:
                 cell = line.split(",")
                 cell[4] = functions.convert(float(cell[4]), volts, eSqH) - shifts[i]
-                #cell[4] = float(cell[4]) + float(listOfMinimums[i])
                 if cell[4] < 14 and cell[4] > 0:
                     listOfBins[int(float(cell[4]-minimum)/(binSize))] += 1
     fs.close()

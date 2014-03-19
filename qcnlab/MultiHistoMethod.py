@@ -12,7 +12,7 @@ listOfBins2 = []
 listOfMinimums = []
 halfBin = 0
 shifts = []
-
+#Function to go get the necessary values
 def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     global numBins, volts, eSqH, minimum, maximum, shifts
     numBins = numberBins+1 #Plus 1 to stop the max value exceeding the range of the bins
@@ -22,6 +22,7 @@ def getValues(numberBins, voltReading, eSqHVal, minVal, maxVal, shiftList):
     maximum = maxVal
     shifts = shiftList
 
+#Function to calculate a histogram
 def formHistogram(outputFile, listOfDirs):
     global maximum, minimum, numBins, volts, eSqH, binSize, listofBins,  listOfBins2, halfBin, shifts
     fs = None
@@ -47,6 +48,7 @@ def formHistogram(outputFile, listOfDirs):
             for line in fs:
                 cell = line.split(",")
                 cell[4] = functions.convert(float(cell[4]), volts, eSqH) - shifts[i]
+                #create histogram of the single file
                 if cell[4] < 14 and cell[4] > 0.3:
                     listOfBins2[int(float(cell[4]+abs(minimum))/(binSize))] += 1
             
@@ -61,7 +63,7 @@ def formHistogram(outputFile, listOfDirs):
             peakXVal = []
             for peak in peakData:
                     peakXVal.append((peak*binSize)+halfBin - abs(minimum))
-            
+            #Add peaks to overall histogram
             for value in peakXVal:
                 listOfBins[int(float(value+abs(minimum))/(binSize))] += 1                         
             
