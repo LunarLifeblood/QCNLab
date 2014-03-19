@@ -58,8 +58,8 @@ def formHistogram(outputFile, listOfDirs):
                          #store last index assessed
                             break #break out of loop so we can calc the step
                 try: 
-                    if(((Top-Bottom) >= eSqH)): #filtering out the accidental mini steps
-                        stepListVoltageValues.append(Top-Bottom)
+                    if(((Top-Bottom) >= 0.2*eSqH)): #filtering out the accidental mini steps
+                        stepListVoltageValues.append(Top)
                     else:
                         #print("false step between " + str(j) +"-" + str(i)) #explaining where we miscalc a step to then assess for debug
                         print("nboithing")
